@@ -1,0 +1,21 @@
+{
+  "name": "quote-management",
+  "version": "1.0.0",
+  "description": "Node JS backend implementation for a quote management system",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "keywords": [
+    "quote-management",
+    "NodeJS",
+    "ExpressJS"
+  ],
+  "author": "Farid ullah",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "sequelize": "^6.28.0"
+  }
+}
