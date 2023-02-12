@@ -23,14 +23,14 @@ const Company = db.define('companies',
 		}
 	},
 	password: {
-		type: Sequelize.STRING(50),
+		type: Sequelize.STRING(100),
 		allowNull: false,
 		validate: {
 			notNull: {
 				msg: 'Password is required'
 			},
 			len: {
-                args: [8, 50],
+                args: [8, 100],
                 msg: "Password must be minimum 8 characters long"
            	}
 		}

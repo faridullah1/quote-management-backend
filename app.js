@@ -7,9 +7,11 @@ env.config({
 });
 
 const globalErrorHandler = require('./controllers/errorController');
+const AppError = require('./utils/appError');
 
 const sequelize = require('./db');
 const companiesRouter = require('./routes/companyRoutes');
+const authRouter = require('./routes/authRoutes');
 
 app.use(express.json());
 
@@ -18,6 +20,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/companies', companiesRouter);
+app.use('/api/auth', authRouter);
 
 // Handling unhandled routes
 app.all('*', (req, res, next) => {
