@@ -7,4 +7,9 @@ router.route('/')
 	.get(auth, supplierController.getAllSuppliers)
     .post(auth, supplierController.createSupplier)
 
+router.route('/:id')
+    .get(auth, supplierController.getSupplier)
+    .patch(auth, supplierController.updateSupplier)
+    .delete(auth, supplierController.deleteSupplier)
+
 module.exports = router;

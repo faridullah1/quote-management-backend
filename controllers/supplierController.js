@@ -5,7 +5,10 @@ const { Supplier } = require("../models/supplierModel");
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSuppliers = async (req, res, next) => {
-	const suppliers = await Supplier.findAll({ include: Company });
+	const suppliers = await Supplier.findAll({ 
+		where: { companyId: req.user.companyId }, 
+		include: Company }
+	);
 
 	res.status(200).json({
 		status: 'success',
@@ -14,6 +17,20 @@ exports.getAllSuppliers = async (req, res, next) => {
 		}
 	});
 };
+
+exports.getSupplier = catchAsync(async (req, res, next) => {
+	const supplierId = req.params.id;
+	const supplier = await Supplier.findByPk(supplierId);
+
+	if (!supplier) return next(new AppError('No record found with given Id', 404));
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			supplier
+		}
+	});
+});
 
 exports.createSupplier = catchAsync(async (req, res, next) => {
 	const { firstName, lastName, email, password, status } = req.body;
@@ -24,6 +41,20 @@ exports.createSupplier = catchAsync(async (req, res, next) => {
 	const supplier = await Supplier.create({ firstName, lastName, email, password: encryptedPassword, status, companyId: req.user.companyId });
 	
 	res.status(201).json({
+		status: 'success',
+		data: {
+			supplier
+		}
+	});
+});
+
+exports.updateSupplier = catchAsync(async (req, res, next) => {
+	const supplierId = req.params.id;
+	const supplier = await Supplier.update(req.body, { where: { supplierId }});
+
+	if (!supplier) return next(new AppError('No record found with given Id', 404));
+
+	res.status(200).json({
 		status: 'success',
 		data: {
 			supplier
