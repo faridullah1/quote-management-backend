@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const { Company } = require("../models/companyModel");
 const catchAsync = require("../utils/catchAsync");
@@ -22,8 +23,13 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 
 	const company = await Company.create({ email, password: encryptedPassword });
 	
+	const token  = jwt.sign({ userId: company.companyId, email: company.email, company: true }, process.env.JWT_PRIVATE_KEY, {
+		expiresIn: process.env.JWT_EXPIRY
+	});
+
 	res.status(201).json({
 		status: 'success',
+		access_token: token,
 		data: {
 			company
 		}
