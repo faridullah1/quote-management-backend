@@ -20,7 +20,7 @@ exports.login = catchAsync(async (req, res, next) => {
 	const isValid = await bcrypt.compare(req.body.password, user.password);
 	if (!isValid) return next(new AppError('Invalid email or password.', 400));
 
-	const token  = jwt.sign({ userId: user.companyId, email: user.email }, process.env.JWT_PRIVATE_KEY, {
+	const token  = jwt.sign({ userId: user.companyId, email: user.email, company: true }, process.env.JWT_PRIVATE_KEY, {
 		expiresIn: process.env.JWT_EXPIRY
 	});
 
