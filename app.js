@@ -11,6 +11,7 @@ const AppError = require('./utils/appError');
 
 const sequelize = require('./db');
 const companiesRouter = require('./routes/companyRoutes');
+const supplierRouter = require('./routes/supplierRoutes');
 const authRouter = require('./routes/authRoutes');
 
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/companies', companiesRouter);
+app.use('/api/suppliers', supplierRouter);
 app.use('/api/auth', authRouter);
 
 // Handling unhandled routes
@@ -28,6 +30,9 @@ app.all('*', (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
+
+// configure tables relation ships
+require('./table_relationships')();
 
 sequelize.sync().then(() => 
 {

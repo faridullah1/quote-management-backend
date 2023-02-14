@@ -28,4 +28,18 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 			company
 		}
 	});
-})
+});
+
+exports.deleteCompany = catchAsync(async (req, res, next) => {
+	const companyId = req.params.id;
+	const company = await Company.destroy({ where: { companyId }});
+
+	if (!company) return next(new AppError('No record found with given Id', 404));
+
+	res.status(204).json({
+		status: 'success',
+		data: {
+			company
+		}
+	});
+});
