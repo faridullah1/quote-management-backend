@@ -1,12 +1,37 @@
+const { Op } = require('sequelize');
 const { Group } = require('../models/groupsModel');
 const { SupplierGroupDetail } = require('../models/supplierGroupDetailModel');
 const { Supplier } = require('../models/supplierModel');
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSupplierGroupDetail = async (req, res, next) => {
-	const groups = await Group.findAll();
+	const search = req.query;
+	const where = {};
 
-	const records = groups.map(group => group.dataValues)
+	const page = +req.query.page || 1;
+	const limit = +req.query.limit || 10;
+
+	for (let key in search) {
+		if (key === 'page' || key === 'limit') continue;
+
+		if (key === 'name') {
+			where.name = {
+				[Op.like]: '%' + search['name'] + '%'
+			}
+		}
+	}
+
+	where.companyId = req.user.companyId;
+
+	const offset = (page - 1) * limit;
+
+	const groups = await Group.findAndCountAll({
+		where,
+		offset,
+		limit
+	});
+
+	const records = groups.rows.map(group => group.dataValues)
 	const supplierGroups = [];
 
 	for (let rec of records) {
@@ -27,6 +52,7 @@ exports.getAllSupplierGroupDetail = async (req, res, next) => {
 
 	res.status(200).json({
 		status: 'success',
+		totalRecords: groups.count,
 		data: {
 			supplierGroups
 		}

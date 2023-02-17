@@ -1,14 +1,37 @@
 const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 const { Company } = require('../models/companyModel');
 
 const { Supplier } = require("../models/supplierModel");
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSuppliers = async (req, res, next) => {
-	const suppliers = await Supplier.findAll({ 
-		where: { companyId: req.user.companyId }, 
-		include: Company }
-	);
+	const search = req.query;
+	const where = {};
+
+	const page = +req.query.page || 1;
+	const limit = +req.query.limit || 10;
+
+	for (let key in search) {
+		if (key === 'page' || key === 'limit') continue;
+
+		if (key === 'firstName') {
+			where.firstName = {
+				[Op.like]: '%' + search['firstName'] + '%'
+			}
+		}
+	}
+
+	where.companyId = req.user.companyId;
+
+	const offset = (page - 1) * limit;
+
+	const suppliers = await Supplier.findAndCountAll({
+		where,
+		limit,
+		offset,
+		include: Company 
+	});
 
 	res.status(200).json({
 		status: 'success',
