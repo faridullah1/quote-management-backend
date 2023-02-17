@@ -1,5 +1,7 @@
 const { Company } = require("./models/companyModel");
 const { Group } = require("./models/groupsModel");
+const { QuoteItem } = require("./models/quoteItemModel");
+const { Quote } = require("./models/quoteModel");
 const { SupplierGroupDetail } = require("./models/supplierGroupDetailModel");
 const { Supplier } = require("./models/supplierModel");
 
@@ -15,4 +17,7 @@ module.exports = function() {
 
     SupplierGroupDetail.hasOne(Supplier, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'supplierId' });
     Supplier.belongsTo(SupplierGroupDetail, { foreignKey: 'supplierId' });
+
+    Quote.hasMany(QuoteItem, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'quoteId' });
+    QuoteItem.belongsTo(Quote, { foreignKey: 'quoteId' });
 }

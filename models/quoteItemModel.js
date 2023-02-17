@@ -1,56 +1,52 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
 const { Company } = require('./companyModel');
+const { Quote } = require('./quoteModel');
 
-const Quote = db.define('quotes', 
+const QuoteItem = db.define('quote_items', 
 {
-	quoteId: {
+	itemId: {
 		type: Sequelize.INTEGER,
 		autoIncrement: true,
 		allowNull: false,
 		primaryKey: true
 	},
 	name: {
-		type: Sequelize.STRING(50),
+		type: Sequelize.STRING(255),
 		allowNull: false,
 		validate: {
 			notNull: {
-				msg: 'Quote name is required'
+				msg: 'Item name is required'
 			},
 		}
 	},
-	startDate: {
-		type: Sequelize.DATE,
+	quantity: {
+		type: Sequelize.FLOAT,
 		allowNull: false,
 		validate: {
 			notNull: {
-				msg: 'Start Date is required'
+				msg: 'Quantity is required'
 			},
 		}
 	},
-	endDate: {
-		type: Sequelize.DATE,
+	price: {
+		type: Sequelize.FLOAT,
 		allowNull: false,
 		validate: {
 			notNull: {
-				msg: 'End Date is required'
+				msg: 'Price is required'
 			},
 		}
 	},
-	status: {
-		type: Sequelize.STRING(50),
-		allowNull: false,
-		defaultValue: 'Draft'
-	},
-	companyId: {
+	quoteId: {
 		type: Sequelize.INTEGER,
 		allowNull: false,
 		references: {
-			model: Company,
-			key: 'companyId',
+			model: Quote,
+			key: 'quoteId',
 			onDelete: 'RESTRICT'
 		}
 	}
 });
 
-exports.Quote = Quote;
+exports.QuoteItem = QuoteItem;
