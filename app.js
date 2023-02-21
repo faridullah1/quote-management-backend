@@ -12,7 +12,8 @@ const AppError = require('./utils/appError');
 const sequelize = require('./db');
 const companiesRouter = require('./routes/companyRoutes');
 const supplierRouter = require('./routes/supplierRoutes');
-const supplierGroupRouter = require('./routes/groupsRoutes');
+const supplierGroupRouter = require('./routes/supplierGroupsDetailRoutes');
+const groupRouter = require('./routes/groupRoutes');
 const quoteRouter = require('./routes/quoteRoutes');
 const quoteItemRouter = require('./routes/quoteItemRoutes');
 const authRouter = require('./routes/authRoutes');
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/companies', companiesRouter);
 app.use('/api/suppliers', supplierRouter);
+app.use('/api/groups', groupRouter);
 app.use('/api/supplierGroups', supplierGroupRouter);
 app.use('/api/quotes', quoteRouter);
 app.use('/api/quoteItems', quoteItemRouter);
@@ -38,7 +40,7 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandler);
 
 // configure tables relation ships
-require('./table_relationships')();
+require('./associations')();
 
 sequelize.sync().then(() => 
 {

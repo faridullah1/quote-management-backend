@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
 const { Company } = require('./companyModel');
+const { Group } = require('./groupsModel');
 const { Quote } = require('./quoteModel');
 
 const QuoteItem = db.define('quote_items', 
@@ -44,6 +45,15 @@ const QuoteItem = db.define('quote_items',
 		references: {
 			model: Quote,
 			key: 'quoteId',
+			onDelete: 'RESTRICT'
+		}
+	},
+	groupId: {
+		type: Sequelize.INTEGER,
+		allowNull: false,
+		references: {
+			model: Group,
+			key: 'groupId',
 			onDelete: 'RESTRICT'
 		}
 	}

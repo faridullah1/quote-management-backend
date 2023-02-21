@@ -6,18 +6,36 @@ const { SupplierGroupDetail } = require("./models/supplierGroupDetailModel");
 const { Supplier } = require("./models/supplierModel");
 
 module.exports = function() {
+    // A company user can register many suppliers
 	Company.hasMany(Supplier, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'companyId' });
+    // A supplier belongs to a single company
     Supplier.belongsTo(Company, { foreignKey: 'companyId' });
 
+
+    // A company can create many groups
     Company.hasMany(Group, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'companyId' });
+    // A group belongs to a single company
     Group.belongsTo(Company, { foreignKey: 'companyId' });
 
+
+    // A Supplier can be inside many groups
     Supplier.belongsToMany(Group, { through: SupplierGroupDetail, foreignKey: 'supplierId' });
+    // A Group can have many different suppliers
     Group.belongsToMany(Supplier, { through: SupplierGroupDetail, foreignKey: 'groupId' });
+
 
     SupplierGroupDetail.hasOne(Supplier, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'supplierId' });
     Supplier.belongsTo(SupplierGroupDetail, { foreignKey: 'supplierId' });
 
+    
+    // A quote can have multiple quote items
     Quote.hasMany(QuoteItem, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'quoteId' });
+    // A quote item belongs to a single quote
     QuoteItem.belongsTo(Quote, { foreignKey: 'quoteId' });
+
+
+    // A group can be linked to many quote items
+    Group.hasMany(QuoteItem, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'groupId' });
+    // A quote item can be associated to one supplier group at a time
+    QuoteItem.belongsTo(Group, { foreignKey: 'groupId' });
 }

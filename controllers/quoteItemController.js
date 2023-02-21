@@ -2,9 +2,9 @@ const { QuoteItem } = require("../models/quoteItemModel");
 const catchAsync = require("../utils/catchAsync");
 
 exports.createQouteItem = catchAsync(async (req, res, next) => {
-	const { name, quantity, price, quoteId } = req.body;
+	const { name, quantity, price, quoteId, groupId } = req.body;
 
-	const item = await QuoteItem.create({ name, quantity, price, quoteId });
+	const item = await QuoteItem.create({ name, quantity, price, quoteId, groupId });
 	
 	res.status(201).json({
 		status: 'success',

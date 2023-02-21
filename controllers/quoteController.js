@@ -1,3 +1,4 @@
+const { Group } = require("../models/groupsModel");
 const { QuoteItem } = require("../models/quoteItemModel");
 const { Quote } = require("../models/quoteModel");
 const catchAsync = require("../utils/catchAsync");
@@ -5,7 +6,10 @@ const catchAsync = require("../utils/catchAsync");
 exports.getAllQuotes = async (req, res, next) => {
 	const quotes = await Quote.findAll({ 
 		where: { companyId: req.user.companyId },
-		include: QuoteItem
+		include: {
+			model: QuoteItem,
+			include: Group
+		}
 	});
 
 	res.status(200).json({
@@ -18,7 +22,12 @@ exports.getAllQuotes = async (req, res, next) => {
 
 exports.getQuote = catchAsync(async (req, res, next) => {
 	const quoteId = req.params.id;
-	const quote = await Quote.findByPk(quoteId, { include: QuoteItem });
+	const quote = await Quote.findByPk(quoteId, {
+		include: {
+			model: QuoteItem,
+			include:  Group
+		}
+	});
 
 	if (!quote) return next(new AppError('No record found with given Id', 404));
 
