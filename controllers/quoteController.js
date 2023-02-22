@@ -61,9 +61,12 @@ exports.updateQuote = catchAsync(async (req, res, next) => {
 	const quoteId = req.params.id;
 	const quote = await Quote.update(req.body, { where: { quoteId }});
 
-	const { quote_items } = req.body;
-	for (let item of quote_items) {
-		await QuoteItem.upsert(item, { itemId: item.itemId });
+	if (req.body.quote_items) {
+		const { quote_items } = req.body;
+		
+		for (let item of quote_items) {
+			await QuoteItem.upsert(item, { itemId: item.itemId });
+		}
 	}
 
 	if (!quote) return next(new AppError('No record found with given Id', 404));
