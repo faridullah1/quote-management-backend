@@ -24,8 +24,8 @@ module.exports = function() {
     Group.belongsToMany(Supplier, { through: SupplierGroupDetail, foreignKey: 'groupId' });
 
 
-    SupplierGroupDetail.hasOne(Supplier, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'supplierId' });
-    Supplier.belongsTo(SupplierGroupDetail, { foreignKey: 'supplierId' });
+    Supplier.hasMany(SupplierGroupDetail, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'supplierId' });
+    SupplierGroupDetail.belongsTo(Supplier, { foreignKey: 'supplierId' });
 
     
     // A quote can have multiple quote items
