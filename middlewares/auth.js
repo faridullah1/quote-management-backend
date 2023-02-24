@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 // Models
 const { Company } = require('../models/companyModel');
+const { Supplier } = require('../models/supplierModel');
 
 // Utils
 const AppError = require('../utils/appError');
@@ -28,7 +29,12 @@ exports.auth = catchAsync(async (req, res, next) => {
 
 	// 3) Check if user still exists;
 	if (decoded) {
-		const currentUser = await Company.findByPk(decoded.userId);
+		let currentUser = await Company.findByPk(decoded.userId);
+
+		if (currentUser == null) {
+			currentUser =  await Supplier.findByPk(decoded.userId);
+		}
+
 		if (!currentUser) {
 			return next(new AppError('The user belongs to the token does no longer exists.', 401));
 		}
