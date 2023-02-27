@@ -10,6 +10,7 @@ const { Company } = require('../models/companyModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const { Supplier } = require('../models/supplierModel');
+const Helpers = require('../utils/helpers');
 
 exports.login = catchAsync(async (req, res, next) => {
 	const { error } = validate(req.body);
@@ -28,18 +29,14 @@ exports.login = catchAsync(async (req, res, next) => {
 	const isValid = await bcrypt.compare(req.body.password, user.password);
 	if (!isValid) return next(new AppError('Invalid email or password.', 400));
 
-	const token  = jwt.sign(
-		{ 
-			userId: req.body.isSupplier ? user.supplierId : user.companyId, 
-			email: user.email,
-			name: user.name,
-			company: !req.body.isSupplier 
-		}, 
-		process.env.JWT_PRIVATE_KEY, 
-		{
-			expiresIn: process.env.JWT_EXPIRY
-		}
-	);
+	const authTokenDetailObj = { 
+		userId: req.body.isSupplier ? user.supplierId : user.companyId, 
+		email: user.email,
+		name: user.name,
+		company: !req.body.isSupplier 
+	};
+
+	Helpers.generateAuthToken(authTokenDetailObj);
 
 	res.status(200).json({
 		status: 'success',

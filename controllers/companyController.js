@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { Company } = require("../models/companyModel");
 const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
+const Helpers = require('../utils/helpers');
 
 exports.getAllCompanies = async (req, res, next) => {
 	const companies = await Company.findAll();
@@ -37,9 +38,7 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 
 	const company = await Company.create({ email, password: encryptedPassword });
 	
-	const token  = jwt.sign({ userId: company.companyId, email: company.email, company: true }, process.env.JWT_PRIVATE_KEY, {
-		expiresIn: process.env.JWT_EXPIRY
-	});
+	const token = Helpers.generateAuthToken({ userId: company.companyId, email: company.email, company: true });
 
 	res.status(201).json({
 		status: 'success',
