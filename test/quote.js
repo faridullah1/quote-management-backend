@@ -21,7 +21,7 @@ describe('/api/quotes', () => {
     });
 
     describe('GET /', () => {
-        it('should return 401 if company is logged in', async () => {            
+        it('should return 401 if user is NOT logged in', async () => {            
             const res = await request(server).get('/api/quotes')
 
             expect(res.status).to.equal(401);

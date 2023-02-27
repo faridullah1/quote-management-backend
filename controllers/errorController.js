@@ -47,7 +47,7 @@ module.exports = (err, req, res, next) => {
 	if (process.env.NODE_ENV === 'development') {
 		sendErrorDev(err, res);
 	}
-	else if (['development', 'test'].includes(process.env.NODE_ENV)) {
+	else if (['production', 'test'].includes(process.env.NODE_ENV)) {
 		sendErrorProd(err, res);
 	}
 }

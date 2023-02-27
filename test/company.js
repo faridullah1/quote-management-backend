@@ -53,7 +53,7 @@ describe('/api/companies', () => {
     });
 
     describe('POST /', () => {
-        it('should return 400 if invalid email is passed.', async () => {
+        it('should return 400 if invalid email is passed', async () => {
             const company = { email: 'a', password: 'tester123' };
 
             const res = await request(server)
@@ -62,5 +62,46 @@ describe('/api/companies', () => {
 
             expect(res.status).to.equal(400);
         });
+
+        it('should return 400 if email is not provided', async () => {
+            const company = { password: 'tester123' };
+
+            const res = await request(server)
+                .post('/api/companies')
+                .send(company)
+
+            expect(res.status).to.equal(400);
+        });
+
+        it('should return 400 if password is not provided', async () => {
+            const company = { email: 'a@gmail.com' };
+
+            const res = await request(server)
+                .post('/api/companies')
+                .send(company)
+
+            expect(res.status).to.equal(400);
+        });
+
+        // it('should return 400 if password is less than 8 characters', async () => {
+        //     const company = { email: 'a@gmail.com' };
+
+        //     const res = await request(server)
+        //         .post('/api/companies')
+        //         .send(company)
+
+        //     expect(res.status).to.equal(400);
+        // });
+
+        // it('should save company if it is valid', async () => {
+        //     const company = { email: 'a@gmail.com', password: 'tester123' };
+
+        //     const res = await request(server)
+        //         .post('/api/companies')
+        //         .send(company)
+
+        //     expect(res.status).to.equal(201); 
+        //     expect(res).not.equal(null);
+        // });
     });
 });
