@@ -1,15 +1,14 @@
-const env = require('dotenv');
+const env = require('dotenv');   
 const express = require('express');
 const app = express();
 
-env.config({
+env.config({ 
     path: './config.env'
 });
 
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 
-const sequelize = require('./db');
 const companiesRouter = require('./routes/companyRoutes');
 const supplierRouter = require('./routes/supplierRoutes');
 const supplierGroupRouter = require('./routes/supplierGroupsDetailRoutes');
@@ -39,14 +38,4 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler);
 
-// configure tables relation ships
-require('./associations')();
-
-sequelize.sync().then(() => 
-{
-	const port = process.env.PORT || 3000;
-	app.listen(port, () => {
-		console.log(`Server is listening on port ${port}`);
-		console.log(`Connected to database ${process.env.DATABASE}`);
-	});
-});
+module.exports = app;
