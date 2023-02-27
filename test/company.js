@@ -51,4 +51,16 @@ describe('/api/companies', () => {
             expect(res.status).to.equal(404);
         });
     });
+
+    describe('POST /', () => {
+        it('should return 400 if invalid email is passed.', async () => {
+            const company = { email: 'a', password: 'tester123' };
+
+            const res = await request(server)
+                .post('/api/companies')
+                .send(company)
+
+            expect(res.status).to.equal(400);
+        });
+    });
 });
