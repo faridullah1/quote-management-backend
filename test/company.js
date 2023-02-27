@@ -83,25 +83,35 @@ describe('/api/companies', () => {
             expect(res.status).to.equal(400);
         });
 
-        // it('should return 400 if password is less than 8 characters', async () => {
-        //     const company = { email: 'a@gmail.com' };
+        it('should return 400 if password is less than 8 characters', async () => {
+            const company = { email: 'a@gmail.com' };
 
-        //     const res = await request(server)
-        //         .post('/api/companies')
-        //         .send(company)
+            const res = await request(server)
+                .post('/api/companies')
+                .send(company)
 
-        //     expect(res.status).to.equal(400);
-        // });
+            expect(res.status).to.equal(400);
+        });
 
-        // it('should save company if it is valid', async () => {
-        //     const company = { email: 'a@gmail.com', password: 'tester123' };
+        it('should return 400 if password is more than 50 characters', async () => {
+            const company = { email: 'a@gmail.com', password: new Array(52).join('a') };
 
-        //     const res = await request(server)
-        //         .post('/api/companies')
-        //         .send(company)
+            const res = await request(server)
+                .post('/api/companies')
+                .send(company)
 
-        //     expect(res.status).to.equal(201); 
-        //     expect(res).not.equal(null);
-        // });
+            expect(res.status).to.equal(400);
+        });
+
+        it('should save company if it is valid', async () => {
+            const company = { email: 'a@gmail.com', password: 'tester123' };
+
+            const res = await request(server)
+                .post('/api/companies')
+                .send(company)
+
+            expect(res.status).to.equal(201); 
+            expect(res).not.equal(null);
+        });
     });
 });

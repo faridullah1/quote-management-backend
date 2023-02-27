@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const { Company } = require("../models/companyModel");
+const { Company, validate } = require("../models/companyModel");
 const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
 const Helpers = require('../utils/helpers');
@@ -31,6 +31,9 @@ exports.getCompany = async (req, res, next) => {
 };
 
 exports.createCompany = catchAsync(async (req, res, next) => {
+	const { error } = validate(req.body);
+	if (error) return next(new AppError(error.message, 400));
+	
 	const { email, password } = req.body;
 
 	const salt = await bcrypt.genSalt(10);

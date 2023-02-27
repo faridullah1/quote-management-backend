@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const Joi = require('joi');
 const db = require('../db');
 
 const Company = db.define('companies', 
@@ -37,4 +38,14 @@ const Company = db.define('companies',
 	}
 });
 
+function validateCompany(company) {
+	const schema = Joi.object({
+		email: Joi.string().required().email(),
+		password: Joi.string().required().min(8).max(50),
+	});
+
+	return schema.validate(company);
+}
+
+exports.validate = validateCompany;
 exports.Company = Company;
