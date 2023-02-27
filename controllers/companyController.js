@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const { Company } = require("../models/companyModel");
+const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllCompanies = async (req, res, next) => {
@@ -11,6 +12,19 @@ exports.getAllCompanies = async (req, res, next) => {
 		status: 'success',
 		data: {
 			companies
+		}
+	});
+};
+
+exports.getCompany = async (req, res, next) => {
+	const company = await Company.findByPk(req.params.id);
+
+	if (!company) return next(new AppError('No record found with given Id', 404));
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			company
 		}
 	});
 };
