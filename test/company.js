@@ -25,9 +25,12 @@ describe('/api/companies', () => {
             ]);
 
             const res = await request(server).get('/api/companies');
+            const { companies } = res.body.data;
 
             expect(res.statusCode).to.equal(200);
-            expect(res.body.data.companies.length).to.equal(2);
+            expect(companies.length).to.equal(2);
+            expect(companies.some(c => c.email === 'a@gmail.com')).to.be.true;
+            expect(companies.some(c => c.email === 'b@gmail.com')).to.be.true;
         });
     });
 });
