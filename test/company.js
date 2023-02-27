@@ -17,8 +17,8 @@ describe('/api/companies', () => {
         server.close();
     });
 
-    describe("GET /", function() {
-        it("should return all companies", async () => {
+    describe('GET /', () => {
+        it('should return all companies', async () => {
             await Company.bulkCreate([
                 { email: 'a@gmail.com', password: 'tester123'},
                 { email: 'b@gmail.com', password: 'tester123'},
@@ -31,6 +31,24 @@ describe('/api/companies', () => {
             expect(companies.length).to.equal(2);
             expect(companies.some(c => c.email === 'a@gmail.com')).to.be.true;
             expect(companies.some(c => c.email === 'b@gmail.com')).to.be.true;
+        });
+    });
+
+    describe('GET /:id', () => {
+        it('should return company if valid id is passed.', async () => {
+            const rec = { email: 'a@gmail.com', password: 'tester123' };
+            const company = await Company.create(rec);
+
+            const res = await request(server).get('/api/companies/' + company.dataValues.companyId);
+
+            expect(res.status).to.equal(200);
+            expect(res.body.data.company).to.property('email', 'a@gmail.com');
+        });
+
+        it('should return 404 if invalid id is passed.', async () => {
+            const res = await request(server).get('/api/companies/44');
+
+            expect(res.status).to.equal(404);
         });
     });
 });
