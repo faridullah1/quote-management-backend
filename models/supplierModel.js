@@ -17,6 +17,9 @@ const Supplier = db.define('suppliers',
 			notNull: {
 				msg: 'First Name is required'
 			},
+			notEmpty: {
+				msg: 'First Name is required'
+			}
 		}
 	},
 	lastName: {
@@ -26,6 +29,9 @@ const Supplier = db.define('suppliers',
 			notNull: {
 				msg: 'Last Name is required'
 			},
+			notEmpty: {
+				msg: 'Last Name is required'
+			}
 		}
 	},
 	email: {
@@ -57,7 +63,12 @@ const Supplier = db.define('suppliers',
 	status: {
 		type: Sequelize.STRING(100),
 		allowNull: false,
-		defaultValue: 'New'
+		defaultValue: 'New',
+		validate: {
+			notEmpty: {
+				msg: 'Status is required'
+			}
+		}
 	},
 	companyId: {
 		type: Sequelize.INTEGER,

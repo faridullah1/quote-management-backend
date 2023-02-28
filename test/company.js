@@ -40,7 +40,7 @@ describe('/api/companies', () => {
 
             expect(res.status).to.equal(404);
         });
-        
+
         it('should return company if valid id is passed.', async () => {
             const rec = { email: 'a@gmail.com', password: 'tester123' };
             const company = await Company.create(rec);

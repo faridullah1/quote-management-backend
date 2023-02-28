@@ -28,8 +28,7 @@ describe('/api/quotes', () => {
         });
 
         it('should return all quotes', async () => {
-            const rec = { email: 'a@gmail.com', password: 'tester123' };
-            const company = await Company.create(rec);
+            const company = await Company.create({ email: 'a@gmail.com', password: 'tester123' });
 
             const token = Helpers.generateAuthToken({ userId: company.dataValues.companyId, email: 'a@gmail.com', company: true });
 
