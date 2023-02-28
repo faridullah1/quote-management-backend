@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const { Company } = require('../models/companyModel');
 
 const { Supplier } = require("../models/supplierModel");
+const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSuppliers = async (req, res, next) => {
@@ -58,6 +59,8 @@ exports.getSupplier = catchAsync(async (req, res, next) => {
 exports.createSupplier = catchAsync(async (req, res, next) => {
 	const { firstName, lastName, email, password, status } = req.body;
 	
+	if (!password) return next(new AppError('Password is required.', 400));
+
 	const salt = await bcrypt.genSalt(10);
 	const encryptedPassword = await bcrypt.hash(password, salt);
 

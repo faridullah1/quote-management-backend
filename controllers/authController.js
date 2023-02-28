@@ -36,7 +36,7 @@ exports.login = catchAsync(async (req, res, next) => {
 		company: !req.body.isSupplier 
 	};
 
-	Helpers.generateAuthToken(authTokenDetailObj);
+	const token = Helpers.generateAuthToken(authTokenDetailObj);
 
 	res.status(200).json({
 		status: 'success',
