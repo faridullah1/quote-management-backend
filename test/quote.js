@@ -84,20 +84,33 @@ describe('/api/quotes', () => {
             expect(res.status).to.equal(404);
         });
 
-        it('should return quote if user is Logged In and valid id is passed.', async () => {
+        it('should return quote with quote items if valid id is passed.', async () => {
+            // Prepare token
             const company = await Company.create({ email: 'a@gmail.com', password: 'tester123' });
-            
-            const quote = await Quote.create({ name: 'abc', startDate: new Date(), endDate: new Date(), companyId: company.dataValues.companyId });
-
             const token = Helpers.generateAuthToken({ userId: company.dataValues.companyId, email: 'a@gmail.com', company: true });
+            
+            // Prepare quote items
+            const group = await Group.create({ name: 'abc', companyId: company.dataValues.companyId });
+            
+            // Create quote with quote items
+            const newQuote = await request(server)
+                .post('/api/quotes')
+                .set('authorization', 'Bearer ' + token)
+                .send({ name: 'abc', startDate: new Date(), endDate: new Date(), companyId: company.dataValues.companyId,
+                    quote_items: [{ name: 'abc', quantity: 100, price: 10, groupId: group.dataValues.groupId }]
+                });
 
             const res = await request(server)
-                .get('/api/quotes/' + quote.dataValues.quoteId)
+                .get('/api/quotes/' + newQuote.body.data.quote.quoteId)
                 .set('authorization', 'Bearer ' + token);
             
+            const { quote } = res.body.data;
+
             expect(res.status).to.equal(200);
-            expect(res.body.data.quote).to.property('name', 'abc');
-            expect(res.body.data.quote).to.property('quote_items');
+            expect(quote).to.property('name', 'abc');
+            expect(quote).to.property('quote_items');
+            expect(quote.quote_items.length).to.equal(1);
+            expect(quote.quote_items[0]).to.property('name', 'abc');
         });
     });
 

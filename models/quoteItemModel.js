@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const db = require('../db');
-const { Company } = require('./companyModel');
 const { Group } = require('./groupsModel');
 const { Quote } = require('./quoteModel');
 
