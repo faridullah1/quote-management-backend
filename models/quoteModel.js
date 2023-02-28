@@ -17,6 +17,9 @@ const Quote = db.define('quotes',
 			notNull: {
 				msg: 'Quote name is required'
 			},
+			notEmpty: {
+				msg: 'Quote name is required'
+			}
 		}
 	},
 	startDate: {

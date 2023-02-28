@@ -1,6 +1,7 @@
 const { Group } = require("../models/groupsModel");
 const { QuoteItem } = require("../models/quoteItemModel");
 const { Quote } = require("../models/quoteModel");
+const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllQuotes = async (req, res, next) => {
@@ -44,7 +45,9 @@ exports.createQuote = catchAsync(async (req, res, next) => {
 
 	const quote = await Quote.create({ name, startDate, endDate, status, companyId: req.user.companyId });
 
-	for (let item of quote_items) {
+	const items = quote_items || [];
+
+	for (let item of items) {
 		const newQuoteItem = { ...item, quoteId: quote.dataValues.quoteId }
 		await QuoteItem.create(newQuoteItem);
 	}
