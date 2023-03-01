@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+const { Bidding } = require("../models/biddingModel");
 const { Group } = require("../models/groupsModel");
 const { QuoteItem } = require("../models/quoteItemModel");
 const { Quote } = require("../models/quoteModel");
@@ -40,6 +41,7 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 	// Only Supplier can perform this action
 	if (!req.user.supplierId) return next(new AppError("You don't have the permission to perform the action", 403));
 
+	// Get groupIds where supplier exists
 	const groupIds = await getSupplierGroups(req.user.supplierId)
 
 	/* Get all those quotes whose 
@@ -52,12 +54,21 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 			model: QuoteItem,
 			required: true,
 
-			include: {
-				model: Group,
-				where: { groupId: {
-					[Op.in]: groupIds
-				}}
-			}
+			include: [
+				{
+					model: Group,
+					where: { groupId: {
+						[Op.in]: groupIds
+					}}
+				},
+				{
+					model: Bidding,
+					where: {
+						supplierId: req.user.supplierId
+					},
+					required: false
+				}
+			]
 		}
 	});
 

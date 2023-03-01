@@ -15,6 +15,7 @@ const supplierGroupRouter = require('./routes/supplierGroupsDetailRoutes');
 const groupRouter = require('./routes/groupRoutes');
 const quoteRouter = require('./routes/quoteRoutes');
 const quoteItemRouter = require('./routes/quoteItemRoutes');
+const biddingRouter = require('./routes/biddingRoutes');
 const authRouter = require('./routes/authRoutes');
 
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use('/api/groups', groupRouter);
 app.use('/api/supplierGroups', supplierGroupRouter);
 app.use('/api/quotes', quoteRouter);
 app.use('/api/quoteItems', quoteItemRouter);
+app.use('/api/biddings', biddingRouter);
 app.use('/api/auth', authRouter);
 
 // Handling unhandled routes

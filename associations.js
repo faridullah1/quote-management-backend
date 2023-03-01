@@ -1,3 +1,4 @@
+const { Bidding } = require("./models/biddingModel");
 const { Company } = require("./models/companyModel");
 const { Group } = require("./models/groupsModel");
 const { QuoteItem } = require("./models/quoteItemModel");
@@ -38,4 +39,14 @@ module.exports = function() {
     Group.hasMany(QuoteItem, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'groupId' });
     // A quote item can be associated to one supplier group at a time
     QuoteItem.belongsTo(Group, { foreignKey: 'groupId' });
+
+    // A supplier can bid on many items
+    Supplier.hasMany(Bidding, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'supplierId' });
+    // bid is only associated with a single supplier;
+    Bidding.belongsTo(Supplier, { foreignKey: 'supplierId' });
+
+    // A group can be linked to many quote items
+    QuoteItem.hasMany(Bidding, { constraints: true, OnDelete: 'RESTRICT', foreignKey: 'itemId' });
+    // A quote item can be associated to one supplier group at a time
+    Bidding.belongsTo(QuoteItem, { foreignKey: 'itemId' });
 }
