@@ -6,6 +6,19 @@ const { SupplierGroupDetail } = require("../models/supplierGroupDetailModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
+const getSupplierGroups = async (supplierId) => {
+	// Get all groups where supplier exists
+	const supplierGroups = await SupplierGroupDetail.findAll({
+		where: { supplierId },
+		attributes: ['groupId']
+	});
+
+	// Prepare array which will contain only group ids
+	const groupIds = supplierGroups.map(g => g.dataValues.groupId);
+
+	return groupIds;
+}
+
 exports.getAllQuotes = async (req, res, next) => {
 	const quotes = await Quote.findAll({ 
 		where: { companyId: req.user.companyId },
@@ -27,14 +40,7 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 	// Only Supplier can perform this action
 	if (!req.user.supplierId) return next(new AppError("You don't have the permission to perform the action", 403));
 
-	// Get all groups where the current logged in supplier exists
-	const supplierGroups = await SupplierGroupDetail.findAll({
-		where: { supplierId: req.user.supplierId },
-		attributes: ['groupId']
-	});
-
-	// Prepare array which will contain only group ids
-	const groupIds = supplierGroups.map(g => g.dataValues.groupId);
+	const groupIds = await getSupplierGroups(req.user.supplierId)
 
 	/* Get all those quotes whose 
 		1. status is RELEASED
@@ -45,7 +51,7 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 		include: {
 			model: QuoteItem,
 			required: true,
-			
+
 			include: {
 				model: Group,
 				where: { groupId: {
@@ -65,12 +71,34 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 
 exports.getQuote = catchAsync(async (req, res, next) => {
 	const quoteId = req.params.id;
-	const quote = await Quote.findByPk(quoteId, {
-		include: {
-			model: QuoteItem,
-			include:  Group
-		}
-	});
+	let groupIds = [];
+	let quote;
+
+	if (req.user.supplierId) {
+		groupIds = await getSupplierGroups(req.user.supplierId);
+	}
+
+	if (groupIds.length > 0) {
+		quote = await Quote.findByPk(quoteId, {
+			include: {
+				model: QuoteItem,
+				include:  {
+					model: Group,
+					where: { groupId: {
+						[Op.in]: groupIds
+					}}
+				}
+			}
+		});
+	}
+	else {
+		quote = await Quote.findByPk(quoteId, {
+			include: {
+				model: QuoteItem,
+				include:  Group
+			}
+		});
+	}
 
 	if (!quote) return next(new AppError('No record found with given Id', 404));
 
@@ -90,6 +118,11 @@ exports.createQuote = catchAsync(async (req, res, next) => {
 	const items = quote_items || [];
 
 	for (let item of items) {
+		if (!item.groupId) {
+			await Quote.destroy({ where: { quoteId: quote.dataValues.quoteId }});
+			return next(new AppError(`"${item.name}" is not linked to a group`, 400));
+		}
+		
 		const newQuoteItem = { ...item, quoteId: quote.dataValues.quoteId }
 		await QuoteItem.create(newQuoteItem);
 	}
@@ -110,6 +143,10 @@ exports.updateQuote = catchAsync(async (req, res, next) => {
 		const { quote_items } = req.body;
 		
 		for (let item of quote_items) {
+			if (!item.groupId) {
+				return next(new AppError(`"${item.name}" is not linked to a group`, 400));
+			}
+
 			await QuoteItem.upsert(item, { itemId: item.itemId });
 		}
 	}
