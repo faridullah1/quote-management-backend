@@ -8,5 +8,6 @@ router.route('/')
     
 router.route('/:id')
     .get(companyController.getCompany)
+    .delete(companyController.deleteCompany)
 
 module.exports = router;

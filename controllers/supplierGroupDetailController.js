@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { Group } = require('../models/groupsModel');
 const { SupplierGroupDetail } = require('../models/supplierGroupDetailModel');
 const { Supplier } = require('../models/supplierModel');
+const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSupplierGroupDetail = async (req, res, next) => {
@@ -87,9 +88,11 @@ exports.getGroup = catchAsync(async (req, res, next) => {
 exports.createGroup = catchAsync(async (req, res, next) => {
 	const { name, suppliers } = req.body;
 
+	const allSuppliers = suppliers || [];
+
 	const group = await Group.create({ name, companyId: req.user.companyId });
 
-	for (let supplierId of suppliers) {
+	for (let supplierId of allSuppliers) {
 		await SupplierGroupDetail.create({ groupId: group.dataValues.groupId, supplierId })
 	}
 	

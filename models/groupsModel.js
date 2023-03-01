@@ -16,6 +16,9 @@ const Group = db.define('groups',
 		validate: {
 			notNull: {
 				msg: 'Group name is required'
+			},
+			notEmpty: {
+				msg: 'Group name is required'
 			}
 		}
 	},
