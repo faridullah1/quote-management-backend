@@ -1,6 +1,8 @@
+const { Op } = require("sequelize");
 const { Group } = require("../models/groupsModel");
 const { QuoteItem } = require("../models/quoteItemModel");
 const { Quote } = require("../models/quoteModel");
+const { SupplierGroupDetail } = require("../models/supplierGroupDetailModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 
@@ -20,6 +22,46 @@ exports.getAllQuotes = async (req, res, next) => {
 		}
 	});
 };
+
+exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
+	// Only Supplier can perform this action
+	if (!req.user.supplierId) return next(new AppError("You don't have the permission to perform the action", 403));
+
+	// Get all groups where the current logged in supplier exists
+	const supplierGroups = await SupplierGroupDetail.findAll({
+		where: { supplierId: req.user.supplierId },
+		attributes: ['groupId']
+	});
+
+	// Prepare array which will contain only group ids
+	const groupIds = supplierGroups.map(g => g.dataValues.groupId);
+
+	/* Get all those quotes whose 
+		1. status is RELEASED
+		2. its items must be linked with groups in which current logged in supplier exists
+	*/
+	const quotes = await Quote.findAll({
+		where: { status: 'Released' },
+		include: {
+			model: QuoteItem,
+			required: true,
+			
+			include: {
+				model: Group,
+				where: { groupId: {
+					[Op.in]: groupIds
+				}}
+			}
+		}
+	});
+
+	res.status(200).json({
+		status: 'success',
+		data: {
+			quotes
+		}
+	});
+});
 
 exports.getQuote = catchAsync(async (req, res, next) => {
 	const quoteId = req.params.id;
