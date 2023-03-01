@@ -18,6 +18,9 @@ const QuoteItem = db.define('quote_items',
 			notNull: {
 				msg: 'Item name is required'
 			},
+			notEmpty: {
+				msg: 'Item name is required'
+			},
 		}
 	},
 	quantity: {
