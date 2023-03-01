@@ -1,6 +1,5 @@
 // 3rd party packages
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 
 // Models
