@@ -27,7 +27,12 @@ const Bidding = db.define('bidding',
 	deliveryTimeUnit: {
 		type: Sequelize.ENUM('Days', 'Weeks'),
 		allowNull: false,
-		default: 'Days'
+		defaultValue: 'Days'
+	},
+	isBidIgnored: {
+		type: Sequelize.BOOLEAN,
+		allowNull: false,
+		defaultValue: false
 	},
 	comments: Sequelize.STRING(1000),
 	supplierId: {

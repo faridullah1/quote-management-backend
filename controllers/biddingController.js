@@ -13,12 +13,21 @@ exports.getAllbid = catchAsync(async (req, res, next) => {
 });
 
 exports.postBid = catchAsync(async (req, res, nex) => {
-	const { price, amount, deliveryTime, deliveryTimeUnit, comments, itemId } = req.body;
+	const { price, amount, deliveryTime, deliveryTimeUnit, isBidIgnored, comments, itemId } = req.body;
+    let bid;
 
-	const bid = await Bidding.create({ 
+    if (isBidIgnored) {
+        bid = await Bidding.create({ 
+            price: -1, amount: -1, deliveryTime: new Date(0), deliveryTimeUnit: 'Days', isBidIgnored,
+            itemId, supplierId: req.user.supplierId 
+        });
+    } 
+    else {
+        await Bidding.create({ 
             price, amount, deliveryTime, deliveryTimeUnit, 
             comments, itemId, supplierId: req.user.supplierId 
-    });
+        });
+    }
 	
 	res.status(201).json({
 		status: 'success',

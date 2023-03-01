@@ -54,21 +54,12 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 			model: QuoteItem,
 			required: true,
 
-			include: [
-				{
-					model: Group,
-					where: { groupId: {
-						[Op.in]: groupIds
-					}}
-				},
-				{
-					model: Bidding,
-					where: {
-						supplierId: req.user.supplierId
-					},
-					required: false
-				}
-			]
+			include: {
+				model: Group,
+				where: { groupId: {
+					[Op.in]: groupIds
+				}}
+			}
 		}
 	});
 
@@ -93,12 +84,21 @@ exports.getQuote = catchAsync(async (req, res, next) => {
 		quote = await Quote.findByPk(quoteId, {
 			include: {
 				model: QuoteItem,
-				include:  {
-					model: Group,
-					where: { groupId: {
-						[Op.in]: groupIds
-					}}
-				}
+				include:  [
+					{
+						model: Group,
+						where: { groupId: {
+							[Op.in]: groupIds
+						}}
+					},
+					{
+						model: Bidding,
+						where: {
+							supplierId: req.user.supplierId
+						},
+						required: false
+					}
+				]
 			}
 		});
 	}
