@@ -4,7 +4,7 @@
   "description": "Node JS backend implementation for a quote management system",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --watch",
+    "test": "mocha 'test/**/*.js'",
     "start": "nodemon server.js"
   },
   "keywords": [

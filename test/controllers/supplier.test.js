@@ -4,14 +4,14 @@ dotenv.config({ path: 'config.env'} );
 
 const { expect } = require('chai');
 const request = require('supertest');
-const { Supplier } = require('../models/supplierModel');
-const { Company } = require('../models/companyModel');
-const Helpers = require('../utils/helpers');
+const { Supplier } = require('../../models/supplierModel');
+const { Company } = require('../../models/companyModel');
+const Helpers = require('../../utils/helpers');
 
 let server;
 describe('/api/suppliers', () => {
     beforeEach(() => {
-        server = require('../server');
+        server = require('../../server');
     });
     
     afterEach(async () => {
