@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha 'test/**/*.js' --watch",
-    "start": "nodemon server.js"
+    "start": "nodemon swagger.js",
+    "swagger-autogen": "node ./swagger.js"
   },
   "keywords": [
     "quote-management",
     "NodeJS",
     "ExpressJS"
   ],
+  "nodemonConfig": {
+    "ignore": ["swagger-output.json"]
+  },
   "author": "Farid ullah",
   "license": "ISC",
   "dependencies": {
@@ -26,6 +30,8 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "swagger-autogen": "^2.23.1",
+    "swagger-ui-express": "^4.6.2"
   }
 }

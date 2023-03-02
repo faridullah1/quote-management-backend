@@ -7,8 +7,15 @@ const catchAsync = require("../utils/catchAsync");
 const Helpers = require('../utils/helpers');
 
 exports.getAllCompanies = async (req, res, next) => {
+	// #swagger.tags = ['Company']
+    // #swagger.description = 'Endpoint for getting all companies created so far.'
+
 	const companies = await Company.findAll();
 
+	/* #swagger.responses[200] = { 
+		schema: { $ref: "#/definitions/Company" },
+		description: 'Response will by an array of companies' 
+	} */
 	res.status(200).json({
 		status: 'success',
 		data: {
@@ -18,10 +25,17 @@ exports.getAllCompanies = async (req, res, next) => {
 };
 
 exports.getCompany = async (req, res, next) => {
+	// #swagger.tags = ['Company']
+    // #swagger.description = 'Endpoint for getting company by its primary key.'
+
 	const company = await Company.findByPk(req.params.id);
 
 	if (!company) return next(new AppError('No record found with given Id', 404));
 
+	/* #swagger.responses[200] = { 
+		schema: { $ref: "#/definitions/Company" },
+		description: 'Response will by an array of companies' 
+	} */
 	res.status(200).json({
 		status: 'success',
 		data: {
@@ -31,6 +45,9 @@ exports.getCompany = async (req, res, next) => {
 };
 
 exports.createCompany = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Company']
+    // #swagger.description = 'Endpoint for creating a new company.'
+
 	const { error } = validate(req.body);
 	if (error) return next(new AppError(error.message, 400));
 	
@@ -53,6 +70,9 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteCompany = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Company']
+    // #swagger.description = 'Endpoint for deleting a company by its Id.'
+
 	const companyId = req.params.id;
 	const company = await Company.destroy({ where: { companyId }});
 

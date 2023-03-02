@@ -6,6 +6,9 @@ const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSupplierGroupDetail = async (req, res, next) => {
+	// #swagger.tags = ['Supplier Group']
+    // #swagger.description = 'Endpoint for getting all supplier groups. It will also give array of suppliers present in the group. Supplier groups can be filtered by their names.'
+
 	const search = req.query;
 	const where = {};
 
@@ -61,6 +64,9 @@ exports.getAllSupplierGroupDetail = async (req, res, next) => {
 };
 
 exports.getGroup = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier Group']
+    // #swagger.description = 'Endpoint for getting supplier group by its Id.'
+
 	const groupId = req.params.id;
 	const group = await Group.findByPk(groupId);
 
@@ -86,6 +92,9 @@ exports.getGroup = catchAsync(async (req, res, next) => {
 });
 
 exports.createGroup = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier Group']
+    // #swagger.description = 'Endpoint for creating new supplier group along with suppliers that will belong to it.'
+
 	const { name, suppliers } = req.body;
 
 	const allSuppliers = suppliers || [];
@@ -105,6 +114,9 @@ exports.createGroup = catchAsync(async (req, res, next) => {
 });
 
 exports.updateGroup = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier Group']
+    // #swagger.description = 'Endpoint for updating a supplier group. Suppliers can be added or removed using this endPoint.'
+
 	const { name, suppliers } = req.body;
 	const groupId = req.params.id;
 	const group = await Group.findByPk(groupId);
@@ -132,6 +144,9 @@ exports.updateGroup = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteGroup = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier Group']
+    // #swagger.description = 'Endpoint for deleting a supplier group.'
+
 	const groupId = req.params.id;
 	const group = await Group.destroy({ where: { groupId }});
 

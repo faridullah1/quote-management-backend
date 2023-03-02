@@ -1,18 +1,10 @@
 const { Bidding } = require("../models/biddingModel");
 const catchAsync = require("../utils/catchAsync");
 
-exports.getAllbid = catchAsync(async (req, res, next) => {
-    const bids = await Bidding.findAll();
-
-    res.status(200).json({
-        status: 'success',
-        data: {
-            bids
-        }
-    });
-});
-
 exports.postBid = catchAsync(async (req, res, nex) => {
+    // #swagger.tags = ['Bidding']
+    // #swagger.description = 'Endpoint for posting a bid on quote item by supplier.'
+
 	const { price, amount, deliveryTime, deliveryTimeUnit, isBidIgnored, comments, itemId } = req.body;
     let bid;
 

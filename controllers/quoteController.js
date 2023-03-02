@@ -21,14 +21,17 @@ const getSupplierGroups = async (supplierId) => {
 }
 
 exports.getAllQuotes = async (req, res, next) => {
+	// #swagger.tags = ['Quote']
+    // #swagger.description = 'Endpoint for getting all quotes created so far.'
+
 	const quotes = await Quote.findAll({ 
-		where: { companyId: req.user.companyId },
-		include: {
-			model: QuoteItem,
-			include: Group
-		}
+		where: { companyId: req.user.companyId }
 	});
 
+	/* #swagger.responses[200] = { 
+		schema: { $ref: "#/definitions/Quote" },
+		description: 'Response will by an array of Quotes' 
+	} */
 	res.status(200).json({
 		status: 'success',
 		data: {
@@ -38,6 +41,9 @@ exports.getAllQuotes = async (req, res, next) => {
 };
 
 exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Quote']
+    // #swagger.description = 'Endpoint for getting all RELEASED quotes created so far. Supplier can only bid on quote which is released.'
+
 	// Only Supplier can perform this action
 	if (!req.user.supplierId) return next(new AppError("You don't have the permission to perform the action", 403));
 
@@ -72,6 +78,9 @@ exports.getAllReleasedQuotesBySupplier = catchAsync(async (req, res, next) => {
 });
 
 exports.getQuote = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Quote']
+    // #swagger.description = 'Endpoint for getting a single quote by its Id. If supplier is logged In, then this API will give quote along with items and bidding info. If Company user is logged In, then this endpoint give quote with its items only.'
+
 	const quoteId = req.params.id;
 	let groupIds = [];
 	let quote;
@@ -122,6 +131,9 @@ exports.getQuote = catchAsync(async (req, res, next) => {
 });
 
 exports.createQuote = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Quote']
+    // #swagger.description = 'Endpoint for creating a new quote. A quote is always created by a company. If quote items are provided to this endpoint then it will also attach them to quote'
+
 	const { name, startDate, endDate, status, quote_items } = req.body;
 
 	const quote = await Quote.create({ name, startDate, endDate, status, companyId: req.user.companyId });
@@ -147,6 +159,9 @@ exports.createQuote = catchAsync(async (req, res, next) => {
 });
 
 exports.updateQuote = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Quote']
+    // #swagger.description = 'Endpoint for updating quote by its Id.'
+
 	const quoteId = req.params.id;
 	const quote = await Quote.update(req.body, { where: { quoteId }});
 
@@ -173,6 +188,9 @@ exports.updateQuote = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteQuote = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Quote']
+    // #swagger.description = 'Endpoint for deleting quote by its Id.'
+
 	const quoteId = req.params.id;
 
 	// First delete all quote items with the given quote id;

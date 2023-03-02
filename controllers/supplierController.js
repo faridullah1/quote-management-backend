@@ -7,6 +7,9 @@ const AppError = require('../utils/appError');
 const catchAsync = require("../utils/catchAsync");
 
 exports.getAllSuppliers = async (req, res, next) => {
+	// #swagger.tags = ['Supplier']
+    // #swagger.description = 'Endpoint for getting all suppliers created so far. Suppliers can be filtered by firstName'
+
 	const search = req.query;
 	const where = {};
 
@@ -34,6 +37,10 @@ exports.getAllSuppliers = async (req, res, next) => {
 		include: Company 
 	});
 
+	/* #swagger.responses[200] = { 
+		schema: { $ref: "#/definitions/Supplier" },
+		description: 'Response will by an array of suppliers' 
+	} */
 	res.status(200).json({
 		status: 'success',
 		data: {
@@ -43,11 +50,18 @@ exports.getAllSuppliers = async (req, res, next) => {
 };
 
 exports.getSupplier = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier']
+    // #swagger.description = 'Endpoint for getting supplier by its Id'
+
 	const supplierId = req.params.id;
 	const supplier = await Supplier.findByPk(supplierId);
 
 	if (!supplier) return next(new AppError('No record found with given Id', 404));
 
+	/* #swagger.responses[200] = { 
+		schema: { $ref: "#/definitions/Supplier" },
+		description: 'Supplier' 
+	} */
 	res.status(200).json({
 		status: 'success',
 		data: {
@@ -57,6 +71,9 @@ exports.getSupplier = catchAsync(async (req, res, next) => {
 });
 
 exports.createSupplier = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier']
+    // #swagger.description = 'Endpoint for creating new supplier. A supplier is linked with a company'
+
 	const { firstName, lastName, email, password, status } = req.body;
 	
 	if (!password) return next(new AppError('Password is required.', 400));
@@ -75,6 +92,9 @@ exports.createSupplier = catchAsync(async (req, res, next) => {
 });
 
 exports.updateSupplier = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier']
+    // #swagger.description = 'Endpoint for updating a supplier.'
+
 	const supplierId = req.params.id;
 	const supplier = await Supplier.update(req.body, { where: { supplierId }});
 
@@ -89,6 +109,9 @@ exports.updateSupplier = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteSupplier = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Supplier']
+    // #swagger.description = 'Endpoint for deleting a supplier.'
+
 	const supplierId = req.params.id;
 	const supplier = await Supplier.destroy({ where: { supplierId }});
 

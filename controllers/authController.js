@@ -12,6 +12,9 @@ const { Supplier } = require('../models/supplierModel');
 const Helpers = require('../utils/helpers');
 
 exports.login = catchAsync(async (req, res, next) => {
+	// #swagger.tags = ['Auth']
+    // #swagger.description = 'Endpoint for Sign In a user. There are 2 types of users for this application, Company and Supplier'
+
 	const { error } = validate(req.body);
 	if (error) return next(new AppError(error.message, 400));
 
