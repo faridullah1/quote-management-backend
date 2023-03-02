@@ -18,15 +18,10 @@ exports.login = catchAsync(async (req, res, next) => {
 	const { error } = validate(req.body);
 	if (error) return next(new AppError(error.message, 400));
 
-	let user;
-	if (req.body.isSupplier) {
-		user = await Supplier.findOne({ where: { email: req.body.email } });
-		if (!user) return next(new AppError('Invalid email or password.', 400));
-	}
-	else {
-		user = await Company.findOne({ where: { email: req.body.email } });
-		if (!user) return next(new AppError('Invalid email or password.', 400));
-	}
+	const model = req.body.isSupplier ? Supplier : Company;
+
+	user = await model.findOne({ where: { email: req.body.email } });
+	if (!user) return next(new AppError('Invalid email or password.', 400));
 
 	const isValid = await bcrypt.compare(req.body.password, user.password);
 	if (!isValid) return next(new AppError('Invalid email or password.', 400));
