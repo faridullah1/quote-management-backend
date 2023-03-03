@@ -1,5 +1,29 @@
 const { Bidding } = require("../models/biddingModel");
+const { Supplier } = require("../models/supplierModel");
 const catchAsync = require("../utils/catchAsync");
+
+exports.quoteItemBidDetail = catchAsync(async (req, res, nex) => {
+    const quoteItemId = +req.params.quoteItemId;
+
+    const bids = await Bidding.findAll({ 
+        where: { itemId: quoteItemId },
+        include: [
+            {
+                model: Supplier,
+                where: {
+                    companyId: req.user.companyId
+                }
+            }
+        ]
+    });
+
+    res.status(200).json({
+		status: 'success',
+		data: {
+			bids
+		}
+	});    
+});
 
 exports.postBid = catchAsync(async (req, res, nex) => {
     // #swagger.tags = ['Bidding']
