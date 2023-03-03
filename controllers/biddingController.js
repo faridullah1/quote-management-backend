@@ -3,6 +3,9 @@ const { Supplier } = require("../models/supplierModel");
 const catchAsync = require("../utils/catchAsync");
 
 exports.quoteItemBidDetail = catchAsync(async (req, res, nex) => {
+    // #swagger.tags = ['Bidding']
+    // #swagger.description = 'Endpoint for getting bids that is placed by supplier against a specific quote item.'
+
     const quoteItemId = +req.params.quoteItemId;
 
     const bids = await Bidding.findAll({ 
