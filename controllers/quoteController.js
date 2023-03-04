@@ -24,9 +24,16 @@ exports.getAllQuotes = async (req, res, next) => {
 	// #swagger.tags = ['Quote']
     // #swagger.description = 'Endpoint for getting all quotes created so far.'
 
-	const quotes = await Quote.findAll({ 
-		where: { companyId: req.user.companyId }
-	});
+	const where = { companyId: req.user.companyId };
+
+	const name = req.query.name;
+	if (name) {
+		where.name = {
+			[Op.like]: '%' + name + '%'
+		}
+	}
+
+	const quotes = await Quote.findAll({ where });
 
 	/* #swagger.responses[200] = { 
 		schema: { $ref: "#/definitions/Quote" },
