@@ -32,6 +32,9 @@ exports.postBid = catchAsync(async (req, res, nex) => {
     // #swagger.tags = ['Bidding']
     // #swagger.description = 'Endpoint for posting a bid on quote item by supplier.'
 
+    // Only Supplier can perform this action
+	if (!req.user.supplierId) return next(new AppError("You don't have the permission to perform the action", 403));
+    
 	const { price, amount, deliveryTime, deliveryTimeUnit, isBidIgnored, comments, itemId } = req.body;
     let bid;
 
