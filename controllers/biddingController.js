@@ -45,7 +45,7 @@ exports.postBid = catchAsync(async (req, res, nex) => {
         });
     } 
     else {
-        await Bidding.create({ 
+        bid = await Bidding.create({ 
             price, amount, deliveryTime, deliveryTimeUnit, 
             comments, itemId, supplierId: req.user.supplierId 
         });

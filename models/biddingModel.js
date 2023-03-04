@@ -14,15 +14,29 @@ const Bidding = db.define('bidding',
 	price: {
 		type: Sequelize.FLOAT,
 		allowNull: false,
+		validate: {
+			notNull: {
+				msg: 'price is required'
+			}
+		}
 	},
 	amount: {
 		type: Sequelize.FLOAT,
 		allowNull: false,
+		validate: {
+			notNull: {
+				msg: 'amount is required'
+			}
+		}
 	},
 	deliveryTime: {
 		type: Sequelize.DATE,
 		allowNull: false,
-		default: Date.now()
+		validate: {
+			notNull: {
+				msg: 'delivery time is required'
+			}
+		}
 	},
 	deliveryTimeUnit: {
 		type: Sequelize.ENUM('Days', 'Weeks'),
