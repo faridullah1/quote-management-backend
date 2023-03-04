@@ -140,12 +140,15 @@ exports.createQuote = catchAsync(async (req, res, next) => {
 
 	const items = quote_items || [];
 
+	// Check if there is any quote item without group
 	for (let item of items) {
 		if (!item.groupId) {
 			await Quote.destroy({ where: { quoteId: quote.dataValues.quoteId }});
 			return next(new AppError(`"${item.name}" is not linked to a group`, 400));
 		}
-		
+	}
+
+	for (let item of items) {
 		const newQuoteItem = { ...item, quoteId: quote.dataValues.quoteId }
 		await QuoteItem.create(newQuoteItem);
 	}
