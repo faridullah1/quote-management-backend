@@ -11,6 +11,12 @@ const catchAsync = require('../utils/catchAsync');
 const { Supplier } = require('../models/supplierModel');
 const Helpers = require('../utils/helpers');
 
+const getColumns = (isSupplier) => {
+	let columns = ['email', 'password'];
+	columns = isSupplier ? ['supplierId', 'firstName', 'lastName', ...columns] : ['companyId', ...columns];
+	return columns;
+}
+
 exports.login = catchAsync(async (req, res, next) => {
 	// #swagger.tags = ['Auth']
     // #swagger.description = 'Endpoint for Sign In a user. There are 2 types of users for this application, Company and Supplier'
@@ -19,8 +25,8 @@ exports.login = catchAsync(async (req, res, next) => {
 	if (error) return next(new AppError(error.message, 400));
 
 	const model = req.body.isSupplier ? Supplier : Company;
+	user = await model.findOne({ where: { email: req.body.email }, attributes: getColumns(req.body.isSupplier) });
 
-	user = await model.findOne({ where: { email: req.body.email } });
 	if (!user) return next(new AppError('Invalid email or password.', 400));
 
 	const isValid = await bcrypt.compare(req.body.password, user.password);
@@ -29,7 +35,7 @@ exports.login = catchAsync(async (req, res, next) => {
 	const authTokenDetailObj = { 
 		userId: req.body.isSupplier ? user.supplierId : user.companyId, 
 		email: user.email,
-		name: user.name,
+		name: req.body.isSupplier ? user.firstName + ' ' + user.lastname : null,
 		company: !req.body.isSupplier 
 	};
 

@@ -82,6 +82,7 @@ exports.createSupplier = catchAsync(async (req, res, next) => {
 	const encryptedPassword = await bcrypt.hash(password, salt);
 
 	const supplier = await Supplier.create({ firstName, lastName, email, password: encryptedPassword, status, companyId: req.user.companyId });
+	delete supplier.dataValues.password;
 	
 	res.status(201).json({
 		status: 'success',

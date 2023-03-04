@@ -56,8 +56,9 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 	const salt = await bcrypt.genSalt(10);
 	const encryptedPassword = await bcrypt.hash(password, salt);
 
-	const company = await Company.create({ email, password: encryptedPassword });
-	
+	let company = await Company.create({ email, password: encryptedPassword });
+	delete company.dataValues.password;
+		
 	const token = Helpers.generateAuthToken({ userId: company.companyId, email: company.email, company: true });
 
 	res.status(201).json({

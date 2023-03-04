@@ -36,6 +36,10 @@ const Company = db.define('companies',
            	}
 		}
 	}
+}, {
+	defaultScope: {
+		attributes: { exclude: ['password'] },
+	}
 });
 
 function validateCompany(company) {

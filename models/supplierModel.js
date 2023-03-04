@@ -79,6 +79,10 @@ const Supplier = db.define('suppliers',
 			onDelete: 'RESTRICT'
 		}
 	}
+}, {
+	defaultScope: {
+		attributes: { exclude: ['password'] },
+	}
 });
 
 exports.Supplier = Supplier;
